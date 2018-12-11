@@ -1,10 +1,18 @@
+fast_checkout: &fast_checkout
+  run:
+    name: Checkout zip
+    command:  |
+      cd ~ && rm -rf project
+      curl -s#L https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/archive/$CIRCLE_SHA1.zip | bsdtar -xvf- > /dev/null
+      mv $CIRCLE_PROJECT_REPONAME-$CIRCLE_SHA1 project
+
 version: 2
 jobs:
   build_and_test:
     macos:
       xcode: "10.1.0"
     steps:
-      - checkout
+      - <<: *fast_checkout
       - restore_cache:
           keys:
             - wordpress-ios-dependencies-{{ checksum "Gemfile.lock" }}-{{ checksum "Podfile.lock" }}
@@ -42,7 +50,7 @@ jobs:
     macos:
       xcode: "10.1.0"
     steps:
-      - checkout
+      - <<: *fast_checkout
       - restore_cache:
           keys:
             - wordpress-ios-danger-{{ checksum "Rakefile" }}-{{ checksum "Gemfile.lock" }}
