@@ -1,10 +1,21 @@
 fast_checkout: &fast_checkout
   run:
-    name: Checkout zip
+    name: Download Github repository as zip
     command:  |
-      cd ~ && rm -rf project
-      curl -s#L https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/archive/$CIRCLE_SHA1.zip | bsdtar -xvf- > /dev/null
-      mv $CIRCLE_PROJECT_REPONAME-$CIRCLE_SHA1 project
+      REF="$CIRCLE_SHA1"
+      OUTPUT_DIRECTORY="$CIRCLE_PROJECT_REPONAME-$REF"
+      if [ -n "$CIRCLE_PULL_REQUEST" ] && [ "$CIRCLE_BRANCH" != "develop" ]; then
+        # Checkout merge if this is a PR
+        PR_NUMBER=$(basename $CIRCLE_PULL_REQUEST)
+        REF="pull/$PR_NUMBER/head"
+        OUTPUT_DIRECTORY="$CIRCLE_PROJECT_REPONAME-pull-$PR_NUMBER-head"
+      fi
+      cd ~
+      # Expand ~ in working directory path path
+      WD="${CIRCLE_WORKING_DIRECTORY/#\~/$HOME}"
+      rm -rf "$WD"
+      curl -s#L "https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/archive/$REF.zip" | bsdtar -xvf-
+      mv "$OUTPUT_DIRECTORY" "$WD"
 
 version: 2
 jobs:
