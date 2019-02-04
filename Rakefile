@@ -45,9 +45,7 @@ namespace :dependencies do
     end
 
     task :install do
-      fold("install.bundler") do
-        sh "bundle install --jobs=3 --retry=3 --path=${BUNDLE_PATH:-vendor/bundle}"
-      end
+      sh "bundle install --jobs=3 --retry=3 --path=${BUNDLE_PATH:-vendor/bundle}"
     end
     CLOBBER << "vendor/bundle"
     CLOBBER << ".bundle"
@@ -63,15 +61,11 @@ namespace :dependencies do
     end
 
     task :install do
-      fold("install.cocoapds") do
-        pod %w[install]
-      end
+      pod %w[install]
     end
 
     task :clean do
-      fold("clean.cocoapds") do
-        FileUtils.rm_rf('Pods')
-      end
+      FileUtils.rm_rf('Pods')
     end
     CLOBBER << "Pods"
   end
@@ -86,36 +80,34 @@ namespace :dependencies do
     end
 
     task :install do
-      fold("install.swiftlint") do
-        puts "Installing SwiftLint #{SWIFTLINT_VERSION} into #{swiftlint_path}"
-        Dir.mktmpdir do |tmpdir|
-          # Try first using a binary release
-          pkgfile = "#{tmpdir}/swiftlint-#{SWIFTLINT_VERSION}.pkg"
-          sh "curl --fail --location -o #{pkgfile} https://github.com/realm/SwiftLint/releases/download/#{SWIFTLINT_VERSION}/SwiftLint.pkg || true"
-          if File.exists?(pkgfile)
-            pkgdir = "#{tmpdir}/swiftlint-#{SWIFTLINT_VERSION}"
-            sh "pkgutil --expand #{pkgfile} #{pkgdir}"
-            Dir.chdir(pkgdir) do
-              binfile = "#{pkgdir}/usr/local/bin/swiftlint"
-              sh "cat Payload | gzip -d | cpio -id"
-              sh "install_name_tool -rpath /Library/Frameworks '@executable_path/../Frameworks' #{binfile}"
-              sh "install_name_tool -rpath /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks '@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks' #{binfile}"
-              puts "Copying SwiftLint #{SWIFTLINT_VERSION} into #{swiftlint_path}"
-              FileUtils.remove_entry_secure(swiftlint_path) if Dir.exist?(swiftlint_path)
-              FileUtils.mkdir_p(swiftlint_path)
-              FileUtils.cp_r("#{pkgdir}/Library/Frameworks", swiftlint_path)
-              FileUtils.mkdir_p("#{swiftlint_path}/bin")
-              FileUtils.cp("#{pkgdir}/usr/local/bin/swiftlint", "#{swiftlint_path}/bin/swiftlint")
-            end
-          else
-            sh "git clone --quiet https://github.com/realm/SwiftLint.git #{tmpdir}"
-            Dir.chdir(tmpdir) do
-              sh "git checkout --quiet #{SWIFTLINT_VERSION}"
-              sh "git submodule --quiet update --init --recursive"
-              FileUtils.remove_entry_secure(swiftlint_path) if Dir.exist?(swiftlint_path)
-              FileUtils.mkdir_p(swiftlint_path)
-              sh "make prefix_install PREFIX='#{swiftlint_path}'"
-            end
+      puts "Installing SwiftLint #{SWIFTLINT_VERSION} into #{swiftlint_path}"
+      Dir.mktmpdir do |tmpdir|
+        # Try first using a binary release
+        pkgfile = "#{tmpdir}/swiftlint-#{SWIFTLINT_VERSION}.pkg"
+        sh "curl --fail --location -o #{pkgfile} https://github.com/realm/SwiftLint/releases/download/#{SWIFTLINT_VERSION}/SwiftLint.pkg || true"
+        if File.exists?(pkgfile)
+          pkgdir = "#{tmpdir}/swiftlint-#{SWIFTLINT_VERSION}"
+          sh "pkgutil --expand #{pkgfile} #{pkgdir}"
+          Dir.chdir(pkgdir) do
+            binfile = "#{pkgdir}/usr/local/bin/swiftlint"
+            sh "cat Payload | gzip -d | cpio -id"
+            sh "install_name_tool -rpath /Library/Frameworks '@executable_path/../Frameworks' #{binfile}"
+            sh "install_name_tool -rpath /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks '@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks' #{binfile}"
+            puts "Copying SwiftLint #{SWIFTLINT_VERSION} into #{swiftlint_path}"
+            FileUtils.remove_entry_secure(swiftlint_path) if Dir.exist?(swiftlint_path)
+            FileUtils.mkdir_p(swiftlint_path)
+            FileUtils.cp_r("#{pkgdir}/Library/Frameworks", swiftlint_path)
+            FileUtils.mkdir_p("#{swiftlint_path}/bin")
+            FileUtils.cp("#{pkgdir}/usr/local/bin/swiftlint", "#{swiftlint_path}/bin/swiftlint")
+          end
+        else
+          sh "git clone --quiet https://github.com/realm/SwiftLint.git #{tmpdir}"
+          Dir.chdir(tmpdir) do
+            sh "git checkout --quiet #{SWIFTLINT_VERSION}"
+            sh "git submodule --quiet update --init --recursive"
+            FileUtils.remove_entry_secure(swiftlint_path) if Dir.exist?(swiftlint_path)
+            FileUtils.mkdir_p(swiftlint_path)
+            sh "make prefix_install PREFIX='#{swiftlint_path}'"
           end
         end
       end
@@ -243,12 +235,6 @@ task :xcode => [:dependencies] do
   sh "open #{XCODE_WORKSPACE}"
 end
 
-def fold(label, &block)
-  puts "travis_fold:start:#{label}" if is_travis?
-  yield
-  puts "travis_fold:end:#{label}" if is_travis?
-end
-
 def is_travis?
   return ENV["TRAVIS"] != nil
 end
@@ -293,7 +279,7 @@ def xcodebuild(*build_cmds)
   cmd += " -configuration #{xcode_configuration}"
   cmd += " "
   cmd += build_cmds.map(&:to_s).join(" ")
-  cmd += " | bundle exec xcpretty -f `bundle exec xcpretty-travis-formatter` && exit ${PIPESTATUS[0]}" unless ENV['verbose']
+  cmd += " | bundle exec xcpretty && exit ${PIPESTATUS[0]}" unless ENV['verbose']
   sh(cmd)
 end
 
