@@ -149,6 +149,7 @@ target 'WordPress' do
         inherit! :search_paths
 
         shared_test_pods
+        gutenberg :commit => '5e7f1afa2c6c12562c6b6734603c2571fae48b4e'
         pod 'Nimble', '~> 7.3.1'
     end
 
