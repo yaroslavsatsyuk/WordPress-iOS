@@ -8,6 +8,14 @@
     #import <Foundation/Foundation.h>
 	#import <SystemConfiguration/SystemConfiguration.h>
 	#import <MobileCoreServices/MobileCoreServices.h>
+
 #import "Constants.h"
+
+// Some third party warnings (e.g. React) fail to be supressed when importing here.
+// This silences the nullability warnings. These warnings will still appear on the main target.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnullability-completeness"
 #import "WordPress-Swift.h"
+#pragma clang diagnostic pop
+
 #endif
