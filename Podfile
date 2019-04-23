@@ -3,6 +3,11 @@ source 'https://github.com/CocoaPods/Specs.git'
 inhibit_all_warnings!
 use_frameworks!
 
+pre_install do |installer|
+# workaround for CocoaPods/CocoaPods#3289
+Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
+end
+
 platform :ios, '10.0'
 workspace 'WordPress.xcworkspace'
 
@@ -102,7 +107,7 @@ target 'WordPress' do
     ## Gutenberg (React Native)
     ## =====================
     ##
-    gutenberg :tag => 'v1.3.0'
+    gutenberg :commit => 'c0bc91357c8a7763f3aea19ff10b80f99f183380'
 
     pod 'RNSVG', :git => 'https://github.com/wordpress-mobile/react-native-svg.git', :tag => '9.3.3-gb'
     pod 'react-native-keyboard-aware-scroll-view', :git => 'https://github.com/wordpress-mobile/react-native-keyboard-aware-scroll-view.git', :tag => 'gb-v0.8.7'
