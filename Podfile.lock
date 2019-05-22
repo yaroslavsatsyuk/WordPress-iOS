@@ -40,7 +40,7 @@ PODS:
   - "GoogleToolboxForMac/NSString+URLArguments (2.2.1)"
   - Gridicons (0.18)
   - GTMSessionFetcher/Core (1.2.2)
-  - Gutenberg (1.5.1):
+  - Gutenberg (1.4.0):
     - React/Core (= 0.59.3)
     - React/CxxBridge (= 0.59.3)
     - React/DevSupport (= 0.59.3)
@@ -229,7 +229,7 @@ DEPENDENCIES:
   - Gifu (= 3.2.0)
   - GiphyCoreSDK (~> 1.4.0)
   - Gridicons (~> 0.16)
-  - Gutenberg (from `http://github.com/wordpress-mobile/gutenberg-mobile/`, tag `v1.5.1`)
+  - Gutenberg (from `http://github.com/wordpress-mobile/gutenberg-mobile/`, branch `try/add-test-ids`)
   - HockeySDK (= 5.1.4)
   - MGSwipeTableCell (= 1.6.8)
   - MRProgress (= 0.8.3)
@@ -309,8 +309,8 @@ EXTERNAL SOURCES:
   Folly:
     :podspec: https://raw.githubusercontent.com/wordpress-mobile/gutenberg-mobile/v1.5.1/react-native-gutenberg-bridge/third-party-podspecs/Folly.podspec.json
   Gutenberg:
+    :branch: try/add-test-ids
     :git: http://github.com/wordpress-mobile/gutenberg-mobile/
-    :tag: v1.5.1
   React:
     :podspec: https://raw.githubusercontent.com/wordpress-mobile/gutenberg-mobile/v1.5.1/react-native-gutenberg-bridge/third-party-podspecs/React.podspec.json
   react-native-keyboard-aware-scroll-view:
@@ -331,8 +331,8 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   Gutenberg:
+    :commit: 2618b5802967a7e4ccec72b30938c9bbea170740
     :git: http://github.com/wordpress-mobile/gutenberg-mobile/
-    :tag: v1.5.1
   react-native-keyboard-aware-scroll-view:
     :git: https://github.com/wordpress-mobile/react-native-keyboard-aware-scroll-view.git
     :tag: gb-v0.8.7
@@ -362,7 +362,7 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: b3553629623a3b1bff17f555e736cd5a6d95ad55
   Gridicons: 04261236382e9c62c62c9a104f2f532c1bdf6a78
   GTMSessionFetcher: 61bb0f61a4cb560030f1222021178008a5727a23
-  Gutenberg: 9594aa8c1b07acd3e9401d5e7252b6d3cfc32290
+  Gutenberg: 09b5d27f8b6b2127758e8bc8a803e35fa4592949
   HockeySDK: 15afe6bc0a5bfe3a531fd73dbf082095f37dac3b
   lottie-ios: 3fef45d3fabe63e3c7c2eb603dd64ddfffc73062
   MGSwipeTableCell: dc4eca3212ed38a563b27d6aa7b3c01ce656c1e2
@@ -396,6 +396,6 @@ SPEC CHECKSUMS:
   ZendeskSDK: cbd49d65efb2f2cdbdcaac84e618896ae87b861e
   ZIPFoundation: 89df685c971926b0323087952320bdfee9f0b6ef
 
-PODFILE CHECKSUM: 1dd64c87489d1786220b23362ff38684051fc381
+PODFILE CHECKSUM: 6786fd1189cdbb5f0b3200be447f798f624c7551
 
 COCOAPODS: 1.6.1

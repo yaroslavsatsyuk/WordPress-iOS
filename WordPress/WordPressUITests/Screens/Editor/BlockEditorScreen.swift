@@ -11,14 +11,14 @@ class BlockEditorScreen: BaseScreen {
 
     // Editor area
     // Title
-    let titleView = XCUIApplication().textViews.containing(.staticText, identifier: "Add title").element(boundBy: 0) // Uses a localized string
+    let titleView = XCUIApplication().otherElements["postTitle"]
     // Paragraph block
-    let paragraphView = XCUIApplication().otherElements["block-0-core/paragraph"].textViews.element(boundBy: 0)
+    let paragraphView = XCUIApplication().otherElements["paragraphBlock"]
     // Image block
-    let imagePlaceholder = XCUIApplication().buttons["Image block. Empty"] // Uses a localized string
+    let imagePlaceholder = XCUIApplication().buttons["imageBlock"]
 
     // Toolbar
-    let addBlockButton = XCUIApplication().buttons["Add block"] // Uses a localized string
+    let addBlockButton = XCUIApplication().buttons["addBlockButton"]
 
     // Action sheets
     let actionSheet = XCUIApplication().sheets.element(boundBy: 0)
@@ -47,7 +47,7 @@ class BlockEditorScreen: BaseScreen {
      - Parameter withText: the text to enter in the paragraph block
      */
     func addParagraphBlock(withText text: String) -> BlockEditorScreen {
-        addBlock("Paragraph")
+        addBlock("paragraph")
         paragraphView.typeText(text)
 
         return self
@@ -57,7 +57,7 @@ class BlockEditorScreen: BaseScreen {
      Adds an image block with latest image from device.
      */
     func addImage() -> BlockEditorScreen {
-        addBlock("Image")
+        addBlock("image")
         addImageByOrder(id: 0)
 
         return self
@@ -96,9 +96,9 @@ class BlockEditorScreen: BaseScreen {
         return EditorPostSettings()
     }
 
-    private func addBlock(_ blockLabel: String) {
+    private func addBlock(_ blockIdentifier: String) {
         addBlockButton.tap()
-        XCUIApplication().otherElements[blockLabel].tap()
+        XCUIApplication().otherElements[blockIdentifier].tap()
     }
 
     /*
