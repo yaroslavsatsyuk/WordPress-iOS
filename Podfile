@@ -81,7 +81,7 @@ def gutenberg(options)
       options = { :path => local_gutenberg.include?('/') ? local_gutenberg : '../gutenberg-mobile' }
     end
     # pod 'Gutenberg', options
-    pod 'Gutenberg', :git => 'http://github.com/wordpress-mobile/gutenberg-mobile/', :branch => 'try/add-test-ids'
+    pod 'Gutenberg', :git => 'http://github.com/wordpress-mobile/gutenberg-mobile/', :branch => 'add/ui-test-ids'
     pod 'RNTAztecView', options
 
     gutenberg_dependencies options
