@@ -37,7 +37,12 @@ class LoginFlow {
             if LoginEmailScreen.isLoaded() && LoginEmailScreen.isEmailEntered() {
                 LoginEmailScreen().emailTextField.clearTextIfNeeded()
             }
-            XCUIApplication().buttons["Back"].tap()
+            let backButton = XCUIApplication().buttons["Back"]
+            if !backButton.exists {
+                // Break from the infinite loop if there is no back button
+                break
+            }
+            backButton.tap()
         }
     }
 }
