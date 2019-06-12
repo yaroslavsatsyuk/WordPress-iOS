@@ -4,7 +4,24 @@ orbs:
   ios: wordpress-mobile/ios@dev:extract-commands
 
 jobs:
-  ui-tests:
+  build-ui-tests:
+    executor:
+      name: ios/default
+      xcode-version: "10.2.0"
+    steps:
+      - checkout
+      - ios/install-dependencies:
+          bundle-install: true
+          pod-install: true
+      - ios/xcodebuild:
+          command: build-for-testing
+          arguments: -workspace 'WordPress.xcworkspace' -scheme 'WordPressUITests' -configuration 'Debug' -sdk iphonesimulator -derivedDataPath DerivedData
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - DerivedData/Build/Products
+            - Pods/WordPressMocks
+  run-ui-tests:
     parameters:
       device:
         type: string
@@ -12,24 +29,20 @@ jobs:
       name: ios/default
       xcode-version: "10.2.0"
     steps:
-      - checkout
       - ios/boot-simulator:
           xcode-version: "10.2.0"
           device: << parameters.device >>
-      - ios/install-dependencies:
-          bundle-install: true
-          pod-install: true
-      - ios/xcodebuild:
-          command: build-for-testing
-          arguments: -workspace 'WordPress.xcworkspace' -scheme 'WordPressUITests' -configuration 'Debug' -sdk iphonesimulator
+      - attach_workspace:
+          at: ./
       - run:
           name: Run mocks
-          command: rake mocks
+          command: ./Pods/WordPressMocks/scripts/start.sh 8282
           background: true
       - ios/wait-for-simulator
       - ios/xcodebuild:
           command: test-without-building
-          arguments: -workspace 'WordPress.xcworkspace' -scheme 'WordPressUITests' -configuration 'Debug' -sdk iphonesimulator -destination "platform=iOS Simulator,id=$SIMULATOR_UDID"
+          arguments: -xctestrun DerivedData/Build/Products/WordPressUITests_iphonesimulator12.2-x86_64.xctestrun -destination "platform=iOS Simulator,id=$SIMULATOR_UDID"
+      - ios/save-xcodebuild-artifacts
 
 workflows:
   wordpress_ios:
@@ -40,18 +53,22 @@ workflows:
           workspace: WordPress.xcworkspace
           scheme: WordPress
           device: iPhone XS
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"
-          filters:
-            branches:
-              only:
-                - develop
+  ui_tests:
+    # triggers:
+    #   - schedule:
+    #       cron: "0 0 * * *"
+    #       filters:
+    #         branches:
+    #           only:
+    #             - develop
     jobs:
-      - ui-tests:
+      - build-ui-tests:
+          name: Build UI Tests
+      - run-ui-tests:
           name: UI Tests (iPhone Xs)
-          device: iPhone XS
-      - ui-tests:
-          name: UI Tests (iPad 6 generation)
-          device: iPad (6th generation)
+          device: iPhone Xs
+          requires: [ "Build UI Tests" ]
+      - run-ui-tests:
+          name: UI Tests (iPad 6th generation)
+          device: iPad \\(6th generation\\)
+          requires: [ "Build UI Tests" ]
