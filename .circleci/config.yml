@@ -1,7 +1,35 @@
 version: 2.1
 
 orbs:
-  ios: wordpress-mobile/ios@0.0.25
+  ios: wordpress-mobile/ios@dev:extract-commands
+
+jobs:
+  ui-tests:
+    parameters:
+      device:
+        type: string
+    executor:
+      name: ios/default
+      xcode-version: "10.2.0"
+    steps:
+      - checkout
+      - ios/boot-simulator:
+          xcode-version: "10.2.0"
+          device: << parameters.device >>
+      - ios/install-dependencies:
+          bundle-install: true
+          pod-install: true
+      - ios/xcodebuild:
+          command: build-for-testing
+          arguments: -workspace 'WordPress.xcworkspace' -scheme 'WordPressUITests' -configuration 'Debug' -sdk iphonesimulator
+      - run:
+          name: Run mocks
+          command: rake mocks
+          background: true
+      - ios/wait-for-simulator
+      - ios/xcodebuild:
+          command: test-without-building
+          arguments: -workspace 'WordPress.xcworkspace' -scheme 'WordPressUITests' -configuration 'Debug' -sdk iphonesimulator -destination "platform=iOS Simulator,id=$SIMULATOR_UDID"
 
 workflows:
   wordpress_ios:
@@ -12,6 +40,18 @@ workflows:
           workspace: WordPress.xcworkspace
           scheme: WordPress
           device: iPhone XS
-          ios-version: "12.2"
-          # If you want to reset the CircleCI cache, increment the number in the cache prefix below
-          cache-prefix: dependency-cache-v1
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - develop
+    jobs:
+      - ui-tests:
+          name: UI Tests (iPhone Xs)
+          device: iPhone XS
+      - ui-tests:
+          name: UI Tests (iPad 6 generation)
+          device: iPad (6th generation)
