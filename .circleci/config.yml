@@ -3,8 +3,12 @@ version: 2.1
 orbs:
   ios: wordpress-mobile/ios@0.0.29
 
+executors:
+  xcode:
+    
+
 jobs:
-  build-ui-tests:
+  build-tests:
     executor:
       name: ios/default
       xcode-version: "10.2.0"
@@ -13,19 +17,25 @@ jobs:
       - ios/install-dependencies:
           bundle-install: true
           pod-install: true
-          cache-prefix: ios-dependencies
       - ios/xcodebuild:
           command: build-for-testing
           arguments: -workspace 'WordPress.xcworkspace' -scheme 'WordPressUITests' -configuration 'Debug' -sdk iphonesimulator -derivedDataPath DerivedData
+      - ios/xcodebuild:
+          command: build-for-testing
+          arguments: -workspace 'WordPress.xcworkspace' -scheme 'WordPress' -configuration 'Debug' -sdk iphonesimulator -derivedDataPath DerivedData
       - persist_to_workspace:
           root: ./
           paths:
             - DerivedData/Build/Products
             - Pods/WordPressMocks
-  run-ui-tests:
+  run-tests:
     parameters:
+      scheme:
+        type: string
       device:
         type: string
+      run-mocks:
+        type: boolean
     executor:
       name: ios/default
       xcode-version: "10.2.0"
@@ -35,42 +45,39 @@ jobs:
           device: << parameters.device >>
       - attach_workspace:
           at: ./
-      - run:
-          name: Run mocks
-          command: ./Pods/WordPressMocks/scripts/start.sh 8282
-          background: true
+      - when:
+          condition: << parameters.run-mocks >>
+          steps:
+            - run:
+                name: Run mocks
+                command: ./Pods/WordPressMocks/scripts/start.sh 8282
+                background: true
       - ios/wait-for-simulator
       - ios/xcodebuild:
           command: test-without-building
-          arguments: -xctestrun DerivedData/Build/Products/WordPressUITests_iphonesimulator12.2-x86_64.xctestrun -destination "platform=iOS Simulator,id=$SIMULATOR_UDID"
+          arguments: -xctestrun DerivedData/Build/Products/<< parameters.scheme >>_iphonesimulator12.2-x86_64.xctestrun -destination "platform=iOS Simulator,id=$SIMULATOR_UDID"
       - ios/save-xcodebuild-artifacts
 
 workflows:
   wordpress_ios:
     jobs:
-      - ios/test:
-          name: build_and_test
-          xcode-version: "10.2.0"
-          workspace: WordPress.xcworkspace
+      - build-tests:
+          name: Build Tests
+      - run-tests:
+          name: Unit Tests (iPhone Xs)
+          device: iPhone Xs
+          run-mocks: false
           scheme: WordPress
-          device: iPhone XS
-          cache-prefix: ios-dependencies
-  ui_tests:
-    # triggers:
-    #   - schedule:
-    #       cron: "0 0 * * *"
-    #       filters:
-    #         branches:
-    #           only:
-    #             - develop
-    jobs:
-      - build-ui-tests:
-          name: Build UI Tests
-      - run-ui-tests:
+          requires: [ "Build Tests" ]
+      - run-tests:
           name: UI Tests (iPhone Xs)
           device: iPhone Xs
-          requires: [ "Build UI Tests" ]
-      - run-ui-tests:
+          run-mocks: true
+          scheme: WordPressUITests
+          requires: [ "Build Tests" ]
+      - run-tests:
           name: UI Tests (iPad 6th generation)
           device: iPad \\(6th generation\\)
-          requires: [ "Build UI Tests" ]
+          run-mocks: true
+          scheme: WordPressUITests
+          requires: [ "Build Tests" ]
