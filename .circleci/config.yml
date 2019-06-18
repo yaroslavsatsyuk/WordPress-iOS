@@ -13,6 +13,7 @@ jobs:
       - ios/install-dependencies:
           bundle-install: true
           pod-install: true
+          cache-prefix: ios-dependencies
       - ios/xcodebuild:
           command: build-for-testing
           arguments: -workspace 'WordPress.xcworkspace' -scheme 'WordPressUITests' -configuration 'Debug' -sdk iphonesimulator -derivedDataPath DerivedData
@@ -53,6 +54,7 @@ workflows:
           workspace: WordPress.xcworkspace
           scheme: WordPress
           device: iPhone XS
+          cache-prefix: ios-dependencies
   ui_tests:
     triggers:
       - schedule:
