@@ -6,7 +6,7 @@ use_frameworks!
 platform :ios, '11.0'
 workspace 'WordPress.xcworkspace'
 
-plugin 'cocoapods-repo-update'
+# plugin 'cocoapods-repo-update'
 
 ## Pods shared between all the targets
 ## ===================================
@@ -91,6 +91,22 @@ end
 def gutenberg_dependencies(options)
     dependencies = [
         'React',
+        'React-Core',
+        'React-cxxreact',
+        'React-RCTAnimation',
+        'React-RCTBlob',
+        'React-RCTSettings',
+        'React-RCTVibration',
+        'React-RCTImage',
+        'React-RCTLinking',
+        'React-RCTNetwork',
+        'React-RCTText',
+        'React-RCTActionSheet',
+        'React-RCTWebSocket',
+        'React-DevSupport',
+        'React-jsi',
+        'React-jsinspector',
+        'React-jsiexecutor',
         'yoga',
         'Folly',
         'react-native-safe-area',
