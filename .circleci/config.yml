@@ -69,13 +69,13 @@ workflows:
           scheme: WordPress
           device: iPhone XS
   ui_tests:
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"
-          filters:
-            branches:
-              only:
-                - develop
+    # triggers:
+    #   - schedule:
+    #       cron: "0 0 * * *"
+    #       filters:
+    #         branches:
+    #           only:
+    #             - develop
     jobs:
       - build-ui-tests:
           name: Build UI Tests

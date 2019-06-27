@@ -26,6 +26,7 @@ class LoginTests: XCTestCase {
             .logout()
 
         XCTAssert(welcomeScreen.isLoaded())
+        XCTFail()
     }
 
     /**
