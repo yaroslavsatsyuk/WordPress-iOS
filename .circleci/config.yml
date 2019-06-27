@@ -42,8 +42,12 @@ jobs:
       - ios/wait-for-simulator
       - ios/xcodebuild:
           command: test-without-building
-          arguments: -xctestrun DerivedData/Build/Products/WordPressUITests_iphonesimulator12.2-x86_64.xctestrun -destination "platform=iOS Simulator,id=$SIMULATOR_UDID"
+          arguments: -xctestrun DerivedData/Build/Products/WordPressUITests_iphonesimulator12.2-x86_64.xctestrun -destination "platform=iOS Simulator,id=$SIMULATOR_UDID" -derivedDataPath DerivedData
       - ios/save-xcodebuild-artifacts
+      - store_artifacts:
+          name: Store .xcresult bundle
+          path: DerivedData/Logs/Test/*.xcresult
+          destination: test-results
       - run:
           name: Prepare Slack message
           when: always
