@@ -49,9 +49,9 @@ jobs:
           when: always
           command: mv DerivedData/Logs/Test/*.xcresult/ UITests.xcresult/
       - store_artifacts:
-          name: Store .xcresult bundle
-          path: UITests.xcresult
-          destination: UITests.xcresult
+          name: Store test attachments
+          path: UITests.xcresult/Attachments
+          destination: Attachments
       # - run:
       #     name: Prepare Slack message
       #     when: always
