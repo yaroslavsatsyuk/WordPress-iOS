@@ -44,10 +44,14 @@ jobs:
           command: test-without-building
           arguments: -xctestrun DerivedData/Build/Products/WordPressUITests_iphonesimulator12.2-x86_64.xctestrun -destination "platform=iOS Simulator,id=$SIMULATOR_UDID" -derivedDataPath DerivedData
       - ios/save-xcodebuild-artifacts
+      - run:
+          name: Gather test results
+          when: always
+          command: mv DerivedData/Logs/Test/*.xcresult/ UITests.xcresult/
       - store_artifacts:
           name: Store .xcresult bundle
-          path: DerivedData/Logs/Test/*.xcresult
-          destination: test-results
+          path: UITests.xcresult
+          destination: UITests.xcresult
       # - run:
       #     name: Prepare Slack message
       #     when: always
