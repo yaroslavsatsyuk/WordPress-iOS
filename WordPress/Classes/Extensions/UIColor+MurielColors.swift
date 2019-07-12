@@ -70,6 +70,7 @@ struct MurielColor {
 
     // MARK: - Additional iOS semantic colors
     static let navigationBar = MurielColor(name: .airo)
+    static let background = MurielColor(name: .gray, shade: .shade0)
 
     /// The full name of the color, with required shade value
     func assetName() -> String {
@@ -241,6 +242,8 @@ extension UIColor {
     static var textInverted = UIColor.white
 
     static var navigationBar = muriel(color: .navigationBar)
+
+    static var background = muriel(color: .background)
 
     /// Muriel/iOS unselected color
     static var unselected: UIColor {

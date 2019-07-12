@@ -15,11 +15,11 @@ open class ReaderGapMarkerCell: UITableViewCell {
 
     fileprivate func applyStyles() {
         // Background styles
-        contentView.backgroundColor = .neutral(shade: .shade0)
+        contentView.backgroundColor = .background
         selectedBackgroundView = UIView(frame: contentView.frame)
-        selectedBackgroundView?.backgroundColor = .neutral(shade: .shade0)
-        contentView.backgroundColor = .neutral(shade: .shade0)
-        tearMaskView.backgroundColor = .neutral(shade: .shade0)
+        selectedBackgroundView?.backgroundColor = .background
+        contentView.backgroundColor = .background
+        tearMaskView.backgroundColor = .background
 
         // Draw the tear
         drawTearBackground()
@@ -55,7 +55,7 @@ open class ReaderGapMarkerCell: UITableViewCell {
         if highlighted {
             // Redraw the backgrounds when highlighted
             drawTearBackground()
-            tearMaskView.backgroundColor = .neutral(shade: .shade0)
+            tearMaskView.backgroundColor = .background
         }
     }
 

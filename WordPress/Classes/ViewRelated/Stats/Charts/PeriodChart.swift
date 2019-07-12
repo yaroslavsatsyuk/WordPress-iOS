@@ -156,11 +156,11 @@ private final class PeriodChartDataTransformer {
     }
 
     static func primaryBarColor(forCount count: Int) -> UIColor {
-        return count > 0 ? .primary : .neutral(shade: .shade0)
+        return count > 0 ? .primary : .background
     }
 
     static func secondaryBarColor(forCount count: Int) -> UIColor {
-        return count > 0 ? .primaryDark : .neutral(shade: .shade0)
+        return count > 0 ? .primaryDark : .background
     }
 
     static func primaryHighlightColor(forCount count: Int) -> UIColor? {

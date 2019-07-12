@@ -18,8 +18,8 @@ extension WPStyleGuide {
     static let postCardBorderColor: UIColor = .neutral(shade: .shade10)
 
     class func applyPostCardStyle(_ cell: UITableViewCell) {
-        cell.backgroundColor = .neutral(shade: .shade0)
-        cell.contentView.backgroundColor = .neutral(shade: .shade0)
+        cell.backgroundColor = .background
+        cell.contentView.backgroundColor = .background
     }
 
     class func applyPostTitleStyle(_ label: UILabel) {
