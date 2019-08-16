@@ -55,7 +55,9 @@ extension XCTestCase {
     public func takeScreenshotOfFailedTest() {
         if let failureCount = testRun?.failureCount, failureCount > 0 {
             XCTContext.runActivity(named: "Take a screenshot at the end of a failed test") { (activity) in
-                add(XCTAttachment(screenshot: XCUIApplication().windows.firstMatch.screenshot()))
+                let screenshot = XCTAttachment(screenshot: XCUIApplication().windows.firstMatch.screenshot())
+                screenshot.name = self.name
+                add(screenshot)
             }
         }
     }
