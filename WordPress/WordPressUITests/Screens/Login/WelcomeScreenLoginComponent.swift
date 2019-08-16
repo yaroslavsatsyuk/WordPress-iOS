@@ -2,7 +2,7 @@ import Foundation
 import XCTest
 
 private struct ElementStringIDs {
-    static let emailLoginButton = "Log in with Email Button invalid" // For testing only; do not merge
+    static let emailLoginButton = "Log in with Email Button"
     static let siteAddressButton = "Self Hosted Login Button"
 }
 
