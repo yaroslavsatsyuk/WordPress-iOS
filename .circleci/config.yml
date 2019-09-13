@@ -12,7 +12,7 @@ jobs:
       - checkout
       - run:
           name: Load chruby
-          command: echo 'source /usr/local/share/chruby/chruby.sh' >> $BASH_ENV
+          command: echo 'source /usr/local/share/chruby/chruby.sh && echo "Switching Ruby"' >> $BASH_ENV
       - ios/test:
           xcode-version: "11.0.0"
           workspace: WordPress.xcworkspace
