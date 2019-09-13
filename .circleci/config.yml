@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  ios: wordpress-mobile/ios@dev:xcode-11-fix
+  ios: wordpress-mobile/ios@dev:add/temporary-xc11-fix
 
 jobs:
   unit-tests:
