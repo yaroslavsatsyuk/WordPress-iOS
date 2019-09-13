@@ -72,6 +72,6 @@ workflows:
           device: iPhone 11
           requires: [ "Build UI Tests" ]
       - run-ui-tests:
-          name: UI Tests (iPad 6th generation)
-          device: iPad \\(6th generation\\)
+          name: UI Tests (iPad Air 6th generation)
+          device: iPad Air \\(3rd generation\\)
           requires: [ "Build UI Tests" ]
