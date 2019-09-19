@@ -12,8 +12,8 @@ jobs:
     steps:
       - git/shallow-checkout
       - ios/install-dependencies:
-            bundle-install: true
-            pod-install: true
+          bundle-install: true
+          pod-install: true
       - ios/xcodebuild:
           command: build-for-testing
           arguments: -workspace 'WordPress.xcworkspace' -scheme 'WordPressUITests' -configuration 'Debug' -sdk iphonesimulator -derivedDataPath DerivedData
@@ -60,7 +60,7 @@ jobs:
       - ios/wait-for-simulator
       - ios/xcodebuild:
           command: test-without-building
-          arguments: -xctestrun DerivedData/Build/Products/WordPressUITests_iphonesimulator12.2-x86_64.xctestrun -destination "platform=iOS Simulator,id=$SIMULATOR_UDID"
+          arguments: -xctestrun DerivedData/Build/Products/WordPressUITests_iphonesimulator12.2-x86_64.xctestrun -parallel-testing-enabled YES -parallel-testing-worker-count 2 -destination "platform=iOS Simulator,id=$SIMULATOR_UDID"
       - ios/save-xcodebuild-artifacts
 
 workflows:
