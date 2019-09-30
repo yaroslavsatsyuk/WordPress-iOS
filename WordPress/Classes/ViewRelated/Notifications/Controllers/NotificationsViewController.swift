@@ -3,6 +3,7 @@ import CoreData
 import CocoaLumberjack
 import WordPressShared
 import WordPressAuthenticator
+import Gridicons
 
 /// The purpose of this class is to render the collection of Notifications, associated to the main
 /// WordPress.com account.
@@ -87,6 +88,13 @@ class NotificationsViewController: UITableViewController, UIViewControllerRestor
         return indicator
     }()
 
+    /// Notification Settings button
+    lazy var notificationSettingsButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: Gridicon.iconOfType(.cog), style: .plain, target: self, action: #selector(showNotificationSettings))
+        button.accessibilityLabel = NSLocalizedString("Notification Settings", comment: "Link to Notification Settings section")
+        return button
+    }()
+
     // MARK: - View Lifecycle
 
     required init?(coder aDecoder: NSCoder) {
@@ -103,8 +111,8 @@ class NotificationsViewController: UITableViewController, UIViewControllerRestor
 
         setupNavigationBar()
         setupTableView()
-        setupTableHeaderView()
         setupTableFooterView()
+        layoutHeaderIfNeeded()
         setupConstraints()
         setupTableHandler()
         setupRefreshControl()
@@ -173,16 +181,36 @@ class NotificationsViewController: UITableViewController, UIViewControllerRestor
         tableViewHandler.updateRowAnimation = .none
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        layoutHeaderIfNeeded()
+    }
+
+    private func layoutHeaderIfNeeded() {
+        precondition(tableHeaderView != nil)
+        // Fix: Update the Frame manually: Autolayout doesn't really help us, when it comes to Table Headers
+        let requiredSize = tableHeaderView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+        var headerFrame = tableHeaderView.frame
+        if headerFrame.height != requiredSize.height {
+            headerFrame.size.height = requiredSize.height
+            tableHeaderView.frame = headerFrame
+            adjustNoResultsViewSize()
+
+            tableHeaderView.layoutIfNeeded()
+
+            // We reassign the tableHeaderView to force the UI to refresh. Yes, really.
+            tableView.tableHeaderView = tableHeaderView
+            tableView.setNeedsLayout()
+        }
+    }
+
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
-        // table header views are a special kind of broken. This dispatch forces the table header to get a new layout
-        // on the next redraw tick, which seems to be required.
         DispatchQueue.main.async {
-            self.setupTableHeaderView()
             self.showNoResultsViewIfNeeded()
         }
 
@@ -346,7 +374,7 @@ class NotificationsViewController: UITableViewController, UIViewControllerRestor
             }
             completionHandler(true)
         })
-        action.backgroundColor = .neutral(shade: .shade50)
+        action.backgroundColor = .neutral(.shade50)
 
         return UISwipeActionsConfiguration(actions: [action])
     }
@@ -433,6 +461,14 @@ private extension NotificationsViewController {
         navigationItem.title = NSLocalizedString("Notifications", comment: "Notifications View Controller title")
     }
 
+    func updateNavigationItems() {
+        navigationItem.rightBarButtonItem = shouldDisplaySettingsButton ? notificationSettingsButton : nil
+    }
+
+    @objc func closeNotificationSettings() {
+        dismiss(animated: true, completion: nil)
+    }
+
     func setupConstraints() {
         precondition(inlinePromptSpaceConstraint != nil)
 
@@ -456,23 +492,6 @@ private extension NotificationsViewController {
         tableView.estimatedSectionHeaderHeight = UITableView.automaticDimension
         WPStyleGuide.configureAutomaticHeightRows(for: tableView)
         WPStyleGuide.configureColors(view: view, tableView: tableView)
-    }
-
-    func setupTableHeaderView() {
-        precondition(tableHeaderView != nil)
-
-        // Fix: Update the Frame manually: Autolayout doesn't really help us, when it comes to Table Headers
-        let requiredSize = tableHeaderView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
-        var headerFrame = tableHeaderView.frame
-        headerFrame.size.height = requiredSize.height
-        tableHeaderView.frame = headerFrame
-        adjustNoResultsViewSize()
-
-        tableHeaderView.layoutIfNeeded()
-
-        // We reassign the tableHeaderView to force the UI to refresh. Yes, really.
-        tableView.tableHeaderView = tableHeaderView
-        tableView.setNeedsLayout()
     }
 
     func setupTableFooterView() {
@@ -501,6 +520,8 @@ private extension NotificationsViewController {
             setupAppRatings()
             showInlinePrompt()
         }
+
+        layoutHeaderIfNeeded()
     }
 
     func setupRefreshControl() {
@@ -514,9 +535,8 @@ private extension NotificationsViewController {
     }
 
     func setupFilterBar() {
-        filterTabBar.tintColor = .primary
-        filterTabBar.deselectedTabColor = .neutral(shade: .shade40)
-        filterTabBar.dividerColor = .neutral(shade: .shade10)
+        WPStyleGuide.configureFilterTabBar(filterTabBar)
+        filterTabBar.superview?.backgroundColor = .filterBarBackground
 
         filterTabBar.items = Filter.allFilters
         filterTabBar.addTarget(self, action: #selector(selectedFilterDidChange(_:)), for: .valueChanged)
@@ -716,6 +736,19 @@ extension NotificationsViewController {
 
         // Dispatch the Action block
         perform(#selector(deleteNoteWithID), with: noteObjectID, afterDelay: Syncing.undoTimeout)
+    }
+
+    /// Presents the Notifications Settings screen.
+    ///
+    @objc func showNotificationSettings() {
+        let controller = NotificationSettingsViewController()
+        controller.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(closeNotificationSettings))
+
+        let navigationController = UINavigationController(rootViewController: controller)
+        navigationController.modalPresentationStyle = .formSheet
+        navigationController.modalTransitionStyle = .coverVertical
+
+        present(navigationController, animated: true, completion: nil)
     }
 }
 
@@ -1114,6 +1147,7 @@ private extension NotificationsViewController {
     func showNoResultsViewIfNeeded() {
         noResultsViewController.removeFromView()
         updateSplitViewAppearanceForNoResultsView()
+        updateNavigationItems()
 
         // Hide the filter header if we're showing the Jetpack prompt
         hideFiltersSegmentedControlIfApplicable()
@@ -1190,6 +1224,10 @@ private extension NotificationsViewController {
         return AccountHelper.isDotcomAvailable() == false
     }
 
+    var shouldDisplaySettingsButton: Bool {
+        return AccountHelper.isDotcomAvailable()
+    }
+
     var shouldDisplayNoResultsView: Bool {
         return tableViewHandler.resultsController.fetchedObjects?.count == 0 && !shouldDisplayJetpackPrompt
     }
@@ -1234,7 +1272,7 @@ internal extension NotificationsViewController {
         self.inlinePromptSpaceConstraint.isActive = true
         UIView.animate(withDuration: WPAnimationDurationDefault, delay: InlinePrompt.animationDelay, options: .curveEaseIn, animations: {
             self.inlinePromptView.alpha = WPAlphaFull
-            self.setupTableHeaderView()
+            self.layoutHeaderIfNeeded()
         })
 
         WPAnalytics.track(.appReviewsSawPrompt)
@@ -1246,11 +1284,10 @@ internal extension NotificationsViewController {
                        delay: delay,
                        animations: {
             self.inlinePromptView.alpha = WPAlphaZero
-            self.setupTableHeaderView()
+            self.layoutHeaderIfNeeded()
         })
     }
 }
-
 
 // MARK: - Sync'ing Helpers
 //

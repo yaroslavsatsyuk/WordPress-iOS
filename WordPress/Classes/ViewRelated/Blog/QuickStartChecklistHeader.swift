@@ -28,16 +28,25 @@ class QuickStartChecklistHeader: UIView {
     @IBOutlet private var titleLabel: UILabel! {
         didSet {
             WPStyleGuide.configureLabel(titleLabel, textStyle: .body)
-            titleLabel.textColor = .neutral(shade: .shade30)
+            titleLabel.textColor = .neutral(.shade30)
         }
     }
     @IBOutlet private var chevronView: UIImageView! {
         didSet {
             chevronView.image = Gridicon.iconOfType(.chevronDown)
-            chevronView.tintColor = WPStyleGuide.cellGridiconAccessoryColor()
+            chevronView.tintColor = .textTertiary
         }
     }
-    @IBOutlet private var bottomStroke: UIView!
+    @IBOutlet var topStroke: UIView! {
+        didSet {
+            topStroke.backgroundColor = .divider
+        }
+    }
+    @IBOutlet private var bottomStroke: UIView! {
+        didSet {
+            bottomStroke.backgroundColor = .divider
+        }
+    }
     @IBOutlet private var contentView: UIView! {
         didSet {
             contentView.leadingAnchor.constraint(equalTo: contentViewLeadingAnchor).isActive = true
@@ -59,6 +68,7 @@ class QuickStartChecklistHeader: UIView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        contentView.backgroundColor = .listForeground
         prepareForVoiceOver()
     }
 }

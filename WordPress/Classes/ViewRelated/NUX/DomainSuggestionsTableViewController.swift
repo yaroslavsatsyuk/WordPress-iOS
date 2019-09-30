@@ -47,7 +47,7 @@ class DomainSuggestionsTableViewController: NUXTableViewController {
     }
 
     private var parentDomainColor: UIColor {
-        return useFadedColorForParentDomains ? .neutral(shade: .shade30) : .neutral(shade: .shade70)
+        return useFadedColorForParentDomains ? .neutral(.shade30) : .neutral(.shade70)
     }
 
     // MARK: - Init
@@ -94,6 +94,16 @@ class DomainSuggestionsTableViewController: NUXTableViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         SVProgressHUD.dismiss()
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if #available(iOS 13, *) {
+            if traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
+                tableView.reloadData()
+            }
+        }
     }
 
     /// Fetches new domain suggestions based on the provided string
@@ -225,7 +235,7 @@ extension DomainSuggestionsTableViewController {
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if section == Sections.suggestions.rawValue {
             let footer = UIView()
-            footer.backgroundColor = .neutral(shade: .shade10)
+            footer.backgroundColor = .neutral(.shade10)
             return footer
         }
         return nil
@@ -253,10 +263,10 @@ extension DomainSuggestionsTableViewController {
         }
 
         cell.placeholder = searchFieldPlaceholder
+        cell.reloadTextfieldStyle()
         cell.delegate = self
         cell.selectionStyle = .none
         cell.backgroundColor = .clear
-
         return cell
     }
 
@@ -283,7 +293,7 @@ extension DomainSuggestionsTableViewController {
             return styledDomain
         }
         styledDomain.addAttribute(.foregroundColor,
-                                  value: UIColor.neutral(shade: .shade70),
+                                  value: UIColor.neutral(.shade70),
                                   range: NSMakeRange(0, dotPosition.utf16Offset(in: domain)))
         return styledDomain
     }
@@ -376,5 +386,12 @@ extension DomainSuggestionsTableViewController: SearchTableViewCellDelegate {
             self?.searchSuggestions = suggestions
             self?.tableView.reloadSections(IndexSet(integer: Sections.suggestions.rawValue), with: .automatic)
         }
+    }
+}
+
+extension SearchTableViewCell {
+    fileprivate func reloadTextfieldStyle() {
+        textField.textColor = .text
+        textField.leftViewImage = UIImage(named: "icon-post-search")
     }
 }

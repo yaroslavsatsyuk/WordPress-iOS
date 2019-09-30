@@ -89,10 +89,7 @@ class SiteStatsPeriodViewModel: Observable {
         tableRows.append(contentsOf: searchTermsTableRows())
         tableRows.append(contentsOf: publishedTableRows())
         tableRows.append(contentsOf: videosTableRows())
-
-        if FeatureFlag.statsFileDownloads.enabled {
-            tableRows.append(contentsOf: fileDownloadsTableRows())
-        }
+        tableRows.append(contentsOf: fileDownloadsTableRows())
 
         tableRows.append(TableFooterRow())
 
@@ -282,13 +279,13 @@ private extension SiteStatsPeriodViewModel {
 
             switch $0.kind {
             case .homepage:
-                icon = Style.imageForGridiconType(.house)
+                icon = Style.imageForGridiconType(.house, withTint: .icon)
             case .page:
-                icon = Style.imageForGridiconType(.pages)
+                icon = Style.imageForGridiconType(.pages, withTint: .icon)
             case .post:
-                icon = Style.imageForGridiconType(.posts)
+                icon = Style.imageForGridiconType(.posts, withTint: .icon)
             case .unknown:
-                icon = Style.imageForGridiconType(.posts)
+                icon = Style.imageForGridiconType(.posts, withTint: .icon)
             }
 
             return StatsTotalRowData(name: $0.title,

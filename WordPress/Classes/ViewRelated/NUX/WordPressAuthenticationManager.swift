@@ -30,31 +30,34 @@ class WordPressAuthenticationManager: NSObject {
                                                                 googleLoginServerClientId: ApiCredentials.googleLoginServerClientId(),
                                                                 googleLoginScheme: ApiCredentials.googleLoginSchemeId(),
                                                                 userAgent: WPUserAgent.wordPress(),
-                                                                showNewLoginFlow: true)
+                                                                showNewLoginFlow: true,
+                                                                enableSignInWithApple: FeatureFlag.signInWithApple.enabled)
 
         let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: .primaryButtonBackground,
                                                 primaryNormalBorderColor: .primaryButtonBorder,
                                                 primaryHighlightBackgroundColor: .primaryButtonDownBackground,
                                                 primaryHighlightBorderColor: .primaryButtonDownBorder,
-                                                secondaryNormalBackgroundColor: .textInverted,
-                                                secondaryNormalBorderColor: .neutral(shade: .shade10),
-                                                secondaryHighlightBackgroundColor: .neutral(shade: .shade10),
-                                                secondaryHighlightBorderColor: .neutral(shade: .shade40),
+                                                secondaryNormalBackgroundColor: .secondaryButtonBackground,
+                                                secondaryNormalBorderColor: .secondaryButtonBorder,
+                                                secondaryHighlightBackgroundColor: .secondaryButtonDownBackground,
+                                                secondaryHighlightBorderColor: .secondaryButtonDownBorder,
                                                 disabledBackgroundColor: .textInverted,
-                                                disabledBorderColor: .neutral(shade: .shade10),
-                                                primaryTitleColor: .textInverted,
+                                                disabledBorderColor: .neutral(.shade10),
+                                                primaryTitleColor: .white,
                                                 secondaryTitleColor: .text,
-                                                disabledTitleColor: .neutral(shade: .shade20),
+                                                disabledTitleColor: .neutral(.shade20),
                                                 textButtonColor: .primary,
                                                 textButtonHighlightColor: .primaryDark,
                                                 instructionColor: .text,
                                                 subheadlineColor: .textSubtle,
                                                 placeholderColor: .textPlaceholder,
-                                                viewControllerBackgroundColor: .tableBackground,
+                                                viewControllerBackgroundColor: .listBackground,
+                                                textFieldBackgroundColor: .listForeground,
                                                 navBarImage: Gridicon.iconOfType(.mySites),
-                                                navBarBadgeColor: .accent(shade: .shade20),
+                                                navBarBadgeColor: .accent(.shade20),
                                                 prologueBackgroundColor: .primary,
-                                                prologueTitleColor: .textInverted)
+                                                prologueTitleColor: .textInverted,
+                                                statusBarStyle: .lightContent)
 
         WordPressAuthenticator.initialize(configuration: configuration,
                                           style: style)
@@ -244,6 +247,20 @@ extension WordPressAuthenticationManager: WordPressAuthenticatorDelegate {
         let account = service.createOrUpdateAccount(withUsername: username, authToken: authToken)
         if service.defaultWordPressComAccount() == nil {
             service.setDefaultWordPressComAccount(account)
+        }
+    }
+
+    /// When an Apple account is used during the Auth flow, save the Apple user id to the keychain.
+    /// It will be used on app launch to check the user id state.
+    ///
+    func userAuthenticatedWithAppleUserID(_ appleUserID: String) {
+        do {
+            try SFHFKeychainUtils.storeUsername(WPAppleIDKeychainUsernameKey,
+                                                andPassword: appleUserID,
+                                                forServiceName: WPAppleIDKeychainServiceName,
+                                                updateExisting: true)
+        } catch {
+            DDLogInfo("Error while saving Apple User ID: \(error)")
         }
     }
 

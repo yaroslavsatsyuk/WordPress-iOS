@@ -13,13 +13,13 @@ plugin 'cocoapods-repo-update'
 ##
 def wordpress_shared
     ## for production:
-    pod 'WordPressShared', '~> 1.8.6'
+    pod 'WordPressShared', '~> 1.8.7'
 
     ## for development:
     # pod 'WordPressShared', :path => '../WordPress-iOS-Shared'
 
     ## while PR is in review:
-#     pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared', :branch => 'feature/change-username-events'
+    # pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared', :branch => 'feature/change-username-events'
     # pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :commit	=> ''
 end
 
@@ -30,21 +30,22 @@ def aztec
     ## pod 'WordPress-Aztec-iOS', :git => 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', :commit => 'b8c53761b89a092ac690a90f1d33bd800a9025a6'
     ## pod 'WordPress-Editor-iOS', :git => 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', :commit => 'b8c53761b89a092ac690a90f1d33bd800a9025a6'
     ## pod 'WordPress-Editor-iOS', :git => 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', :tag => '1.5.0.beta.1'
-    pod 'WordPress-Editor-iOS', '~> 1.8.0'
+    ## pod 'WordPress-Aztec-iOS', :path => '../AztecEditor-iOS'
+    pod 'WordPress-Editor-iOS', '~> 1.9.0'
 end
 
 def wordpress_ui
     ## for production:
-    pod 'WordPressUI', '~> 1.3.4'
+    pod 'WordPressUI', '~> 1.3.5'
 
     ## for development:
     ## pod 'WordPressUI', :path => '../WordPressUI-iOS'
     ## while PR is in review:
-    ## pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS', :branch => 'change_layout_margins_uiview_helper'
+    ## pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS', :branch => 'fix/fancy-alert-dark-mode'
 end
 
 def wordpress_kit
-    pod 'WordPressKit', '~> 4.4.0'
+    pod 'WordPressKit', '~> 4.5.0'
     #pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => ''
     #pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :commit => 'a06182b86d3c8542c16ce38c765769e1d50b0d5f'
     #pod 'WordPressKit', :path => '../WordPressKit-iOS'
@@ -113,7 +114,8 @@ def gutenberg_dependencies(options)
         'react-native-keyboard-aware-scroll-view',
         'react-native-safe-area',
         'react-native-video',
-        'RNSVG'
+        'RNSVG',
+        'ReactNativeDarkMode',
     ]
     if options[:path]
         podspec_prefix = options[:path]
@@ -140,7 +142,7 @@ target 'WordPress' do
     ## Gutenberg (React Native)
     ## =====================
     ##
-    gutenberg :tag => 'v1.10.3'
+    gutenberg :commit => '640455e3203791f84b207974fa8c3e307f1fa586'
 
     ## Third party libraries
     ## =====================
@@ -153,18 +155,18 @@ target 'WordPress' do
     pod 'MRProgress', '0.8.3'
     pod 'Starscream', '3.0.6'
     pod 'SVProgressHUD', '2.2.5'
-    pod 'ZendeskSDK', '3.0.1'
+    pod 'ZendeskSDK', :git => 'https://github.com/zendesk/zendesk_sdk_ios', :tag => '3.0.1-swift5.1-GM'
     pod 'AlamofireNetworkActivityIndicator', '~> 2.3'
-    pod 'FSInteractiveMap', :git => 'https://github.com/wordpress-mobile/FSInteractiveMap.git', :tag => '0.1.1'
+    pod 'FSInteractiveMap', :git => 'https://github.com/wordpress-mobile/FSInteractiveMap.git', :tag => '0.2.0'
 
     ## Automattic libraries
     ## ====================
     ##
 
     # Production
-    pod 'Automattic-Tracks-iOS', '~> 0.4'
+    pod 'Automattic-Tracks-iOS', '~> 0.4.2'
     # While in PR
-    # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => 'a15db91a24499913affae84243d45be0e353472a'
+    # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => '0cc8960098791cfe1b02914b15a662af20b60389'
 
     pod 'NSURL+IDN', '0.3'
 
@@ -174,7 +176,7 @@ target 'WordPress' do
     
     pod 'Gridicons', '~> 0.16'
 
-    pod 'WordPressAuthenticator', '~> 1.8.0-beta.1'
+    pod 'WordPressAuthenticator', '~> 1.10.0-beta.2'
     # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
     # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => ''
 
@@ -188,8 +190,10 @@ target 'WordPress' do
         pod 'Nimble', '~> 7.3.1'
     end
 
-    ## Convert the 3rd-party license acknowledgements markdown into html for use in the app
-    post_install do
+    
+    post_install do      
+      
+        ## Convert the 3rd-party license acknowledgements markdown into html for use in the app
         require 'commonmarker'
         
         project_root = File.dirname(__FILE__)
@@ -205,6 +209,12 @@ target 'WordPress' do
                              color: #1a1a1a;
                              margin: 20px;
                            }
+                          @media (prefers-color-scheme: dark) {
+                           body {
+                            background: #1a1a1a;
+                            color: white;
+                           }
+                          }
                            pre {
                             white-space: pre-wrap;
                            }
@@ -218,7 +228,7 @@ target 'WordPress' do
                        </body>"
           
           ## Remove the <h1>, since we've promoted it to <title>
-          styled_html = styled_html.sub("<h1>#{acknowledgements}</h1>", '')
+          styled_html = styled_html.sub("<h1>Acknowledgements</h1>", '')
           
           ## The glog library's license contains a URL that does not wrap in the web view,
           ## leading to a large right-hand whitespace gutter.  Work around this by explicitly
@@ -380,9 +390,7 @@ pre_install do |installer|
           next
         end
         static << pod
-        def pod.static_framework?;
-          true
-        end
+		pod.instance_variable_set(:@build_type, Pod::Target::BuildType.static_framework)
     end
     puts "Installing #{static.count} pods as static frameworks"
     puts "Installing #{dynamic.count} pods as dynamic frameworks"

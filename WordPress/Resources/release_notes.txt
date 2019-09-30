@@ -1,5 +1,3 @@
-13.1
------
-- You can now change your username in the app.
-- Data about your File Downloads is now available in Period stats.
-- You can now publish drafts in the Posts list by tapping the new “Publish Now” action accessible from the “…” menu.
+* After a recent round of improvements, the Block Editor is faster and performs more smoothly on the app.
+* Some of you were having trouble with Dark Mode on iPads; we sorted it out (adios, uninvited glare!).
+* Your site visitors love posts with media, so we’ve made the experience of creating them more stable.

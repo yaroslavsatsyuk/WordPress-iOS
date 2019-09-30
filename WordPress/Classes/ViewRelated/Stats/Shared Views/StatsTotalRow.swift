@@ -199,8 +199,9 @@ class StatsTotalRow: UIView, NibLoadable, Accessible {
 
         switch (showDisclosure, hasChildRows) {
         case (true, true):
-            let hint = expanded ? "Expanded. Tap to collapse." : "Collapsed. Tap to expand."
-            accessibilityHint = NSLocalizedString(hint, comment: "Accessibility hint")
+            accessibilityHint = expanded
+                                    ? NSLocalizedString("Expanded. Tap to collapse.", comment: "Accessibility hint")
+                                    : NSLocalizedString("Collapsed. Tap to expand.", comment: "Accessibility hint")
         case (true, false):
             accessibilityHint = NSLocalizedString("Tap for more detail.", comment: "Accessibility hint")
         default:
@@ -212,6 +213,8 @@ class StatsTotalRow: UIView, NibLoadable, Accessible {
 private extension StatsTotalRow {
 
     func applyStyles() {
+        backgroundColor = .listForeground
+        contentView.backgroundColor = .listForeground
         Style.configureLabelAsCellRowTitle(itemLabel)
         Style.configureLabelItemDetail(itemDetailLabel)
         Style.configureLabelAsData(dataLabel)

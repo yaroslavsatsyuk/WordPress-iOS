@@ -161,13 +161,6 @@ class MeViewController: UITableViewController, UIViewControllerRestoration {
             action: pushAccountSettings(),
             accessibilityIdentifier: "accountSettings")
 
-        let notificationSettings = NavigationItemRow(
-            title: RowTitles.notificationSettings,
-            icon: Gridicon.iconOfType(.bell),
-            accessoryType: accessoryType,
-            action: pushNotificationSettings(),
-            accessibilityIdentifier: "notificationSettings")
-
         let helpAndSupportIndicator = IndicatorNavigationItemRow(
             title: RowTitles.support,
             icon: Gridicon.iconOfType(.help),
@@ -192,9 +185,9 @@ class MeViewController: UITableViewController, UIViewControllerRestoration {
                     ImmuTableSection(rows: [
                         myProfile,
                         accountSettings,
-                        appSettingsRow,
-                        notificationSettings
-                        ]),
+                        appSettingsRow
+                        ],
+                         footerText: NSLocalizedString("Notification settings can now be found in the Notifications tab", comment: "Instruction informing the user where notification settings can be found.")),
                     ImmuTableSection(rows: [helpAndSupportIndicator]),
                     ImmuTableSection(
                         headerText: wordPressComAccount,
@@ -273,13 +266,6 @@ class MeViewController: UITableViewController, UIViewControllerRestoration {
         }
     }
 
-    func pushNotificationSettings() -> ImmuTableAction {
-        return { [unowned self] row in
-            let controller = NotificationSettingsViewController()
-            self.showDetailViewController(controller, sender: self)
-        }
-    }
-
     func pushHelp() -> ImmuTableAction {
         return { [unowned self] row in
             let controller = SupportTableViewController()
@@ -323,12 +309,6 @@ class MeViewController: UITableViewController, UIViewControllerRestoration {
     ///
     @objc public func navigateToAppSettings() {
         navigateToTarget(for: appSettingsRow.title)
-    }
-
-    /// Selects the Notification Settings row and pushes the Notification Settings view controller
-    ///
-    @objc public func navigateToNotificationSettings() {
-        navigateToTarget(for: RowTitles.notificationSettings)
     }
 
     /// Selects the Help & Support row and pushes the Support view controller
@@ -387,7 +367,7 @@ class MeViewController: UITableViewController, UIViewControllerRestoration {
         let alert  = UIAlertController(title: logOutAlertTitle, message: nil, preferredStyle: .alert)
         alert.addActionWithTitle(LogoutAlert.cancelAction, style: .cancel)
         alert.addActionWithTitle(LogoutAlert.logoutAction, style: .destructive) { _ in
-            self.logOut()
+            AccountHelper.logOutDefaultWordPressComAccount()
         }
 
         present(alert, animated: true)
@@ -405,24 +385,6 @@ class MeViewController: UITableViewController, UIViewControllerRestoration {
         let format = count > 1 ? LogoutAlert.unsavedTitlePlural : LogoutAlert.unsavedTitleSingular
         return String(format: format, count)
     }
-
-    fileprivate func logOut() {
-        let context = ContextManager.sharedInstance().mainContext
-        let service = AccountService(managedObjectContext: context)
-        service.removeDefaultWordPressComAccount()
-
-        // Delete local notification on logout
-        PushNotificationsManager.shared.deletePendingLocalNotifications()
-
-        // Also clear the spotlight index
-        SearchManager.shared.deleteAllSearchableItems()
-
-        // Delete donated user activities (e.g., for Siri Shortcuts)
-        if #available(iOS 12.0, *) {
-            NSUserActivity.deleteAllSavedUserActivities {}
-        }
-    }
-
 
     // MARK: - Private Properties
 
@@ -528,7 +490,6 @@ private extension MeViewController {
         static let appSettings = NSLocalizedString("App Settings", comment: "Link to App Settings section")
         static let myProfile = NSLocalizedString("My Profile", comment: "Link to My Profile section")
         static let accountSettings = NSLocalizedString("Account Settings", comment: "Link to Account Settings section")
-        static let notificationSettings = NSLocalizedString("Notification Settings", comment: "Link to Notification Settings section")
         static let support = NSLocalizedString("Help & Support", comment: "Link to Help section")
         static let logIn = NSLocalizedString("Log In", comment: "Label for logging in to WordPress.com account")
         static let logOut = NSLocalizedString("Log Out", comment: "Label for logging out from WordPress.com account")

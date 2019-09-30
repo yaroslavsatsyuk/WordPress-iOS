@@ -36,7 +36,7 @@ CGFloat const MenuItemsStackableViewDefaultHeight = 44.0;
     if (self) {
 
         self.translatesAutoresizingMaskIntoConstraints = NO;
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor murielListForeground];
 
         _drawsLineSeparator = YES;
 
@@ -55,7 +55,7 @@ CGFloat const MenuItemsStackableViewDefaultHeight = 44.0;
     contentView.drawDelegate = self;
     contentView.translatesAutoresizingMaskIntoConstraints = NO;
     contentView.tintColor = [self iconTintColor];
-    contentView.backgroundColor = [UIColor whiteColor];
+    contentView.backgroundColor = [UIColor murielListForeground];
 
     [self addSubview:contentView];
     _contentView = contentView;
@@ -109,7 +109,7 @@ CGFloat const MenuItemsStackableViewDefaultHeight = 44.0;
     // width and height constraints are (less than or equal to) in case the view is hidden
     [iconView.widthAnchor constraintLessThanOrEqualToConstant:MenusDesignItemIconSize].active = YES;
     [iconView.heightAnchor constraintLessThanOrEqualToConstant:MenusDesignItemIconSize].active = YES;
-    iconView.tintColor = [UIColor murielNeutral30];
+    iconView.tintColor = [UIColor murielListIcon];
     _iconView = iconView;
 
     NSAssert(_stackView != nil, @"stackView is nil");
@@ -214,6 +214,7 @@ CGFloat const MenuItemsStackableViewDefaultHeight = 44.0;
     button.backgroundColor = [UIColor clearColor];
 
     [button setImage:image forState:UIControlStateNormal];
+    button.tintColor = [UIColor murielTextTertiary];
 
     CGFloat padding = 6.0;
     CGFloat width = MenusDesignItemIconSize + (padding * 2);
@@ -245,7 +246,7 @@ CGFloat const MenuItemsStackableViewDefaultHeight = 44.0;
     if (self.highlighted) {
         color = [UIColor murielPrimary40];
     } else  {
-        color = [UIColor whiteColor];
+        color = [UIColor murielListForeground];
     }
 
     return color;
@@ -257,7 +258,7 @@ CGFloat const MenuItemsStackableViewDefaultHeight = 44.0;
     if (self.highlighted) {
         color = [UIColor whiteColor];
     } else  {
-        color = [UIColor murielNeutral70];
+        color = [UIColor murielText];
     }
 
     return color;
@@ -269,7 +270,7 @@ CGFloat const MenuItemsStackableViewDefaultHeight = 44.0;
     if (self.highlighted) {
         color = [UIColor whiteColor];
     } else  {
-        color = [UIColor murielNeutral30];
+        color = [UIColor murielListIcon];
     }
 
     return color;
