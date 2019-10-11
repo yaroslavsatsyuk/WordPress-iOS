@@ -24,12 +24,25 @@ jobs:
       - ios/install-dependencies:
             bundle-install: true
             pod-install: true
+      - restore_cache:
+          keys:
+            - derived-data-{{ .Branch }}-{{ .Revision }}
+            - derived-data-{{ .Branch }}
+            - derived-data
+      - run:
+          name: Update DerivedData files
+          command: find DerivedData -type f -exec touch {} + || true
       - ios/xcodebuild:
           command: build-for-testing
           arguments: -workspace 'WordPress.xcworkspace' -scheme 'WordPressUITests' -configuration 'Debug' -sdk iphonesimulator -derivedDataPath DerivedData
       - ios/xcodebuild:
           command: build-for-testing
           arguments: -workspace 'WordPress.xcworkspace' -scheme 'WordPress' -configuration 'Debug' -sdk iphonesimulator -derivedDataPath DerivedData
+      - save_cache:
+          name: Save DerivedData cache
+          key: derived-data-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - DerivedData
       - persist_to_workspace:
           root: ./
           paths:
@@ -77,13 +90,13 @@ workflows:
   wordpress_ios:
     jobs:
       - Build Tests
-      - Unit Tests:
-          requires: [ "Build Tests" ]
-      - UI Tests:
-          name: UI Tests (iPhone 11)
-          device: iPhone 11
-          requires: [ "Build Tests" ]
-      - UI Tests:
-          name: UI Tests (iPad Air 3rd generation)
-          device: iPad Air \\(3rd generation\\)
-          requires: [ "Build Tests" ]
+      # - Unit Tests:
+      #     requires: [ "Build Tests" ]
+      # - UI Tests:
+      #     name: UI Tests (iPhone 11)
+      #     device: iPhone 11
+      #     requires: [ "Build Tests" ]
+      # - UI Tests:
+      #     name: UI Tests (iPad Air 3rd generation)
+      #     device: iPad Air \\(3rd generation\\)
+      #     requires: [ "Build Tests" ]
