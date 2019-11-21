@@ -43,7 +43,7 @@ def wordpress_ui
 end
 
 def wordpress_kit
-    pod 'WordPressKit', '~> 4.2.0-beta'
+    pod 'WordPressKit', '~> 4.2.0'
     #pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => 'feature/fix-publishing-private-xmlrpc-posts'
     #pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :commit => 'ef4f184f5a33ef628c053892e8f706046191d66c'
     #pod 'WordPressKit', :path => '../WordPressKit-iOS'
@@ -132,7 +132,7 @@ target 'WordPress' do
     pod '1PasswordExtension', '1.8.5'
     pod 'Charts', '~> 3.2.2'
     pod 'Gifu', '3.2.0'
-    pod 'GiphyCoreSDK', '~> 1.4.0'
+    #pod 'GiphyCoreSDK', '~> 1.4.0'
     pod 'HockeySDK', '5.1.4', :configurations => ['Release-Internal', 'Release-Alpha']
     pod 'MGSwipeTableCell', '1.6.8'
     pod 'MRProgress', '0.8.3'
