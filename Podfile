@@ -175,8 +175,8 @@ target 'WordPress' do
 
     pod 'Gridicons', '~> 0.16'
 
-    pod 'WordPressAuthenticator', '~> 1.10.4'
     # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
+    pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'issue/wcios-1555-color-fixes'
 
     aztec
     wordpress_ui
