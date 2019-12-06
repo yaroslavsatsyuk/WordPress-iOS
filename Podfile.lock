@@ -218,7 +218,7 @@ PODS:
   - WordPress-Aztec-iOS (1.13.0)
   - WordPress-Editor-iOS (1.13.0):
     - WordPress-Aztec-iOS (= 1.13.0)
-  - WordPressAuthenticator (1.10.5-beta.1):
+  - WordPressAuthenticator (1.10.5-beta.2):
     - 1PasswordExtension (= 1.8.5)
     - Alamofire (= 4.7.3)
     - CocoaLumberjack (~> 3.5)
@@ -309,7 +309,7 @@ DEPENDENCIES:
   - Starscream (= 3.0.6)
   - SVProgressHUD (= 2.2.5)
   - WordPress-Editor-iOS (~> 1.13.0)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `issue/wcios-1555-color-fixes`)
+  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `issue/wcios-1555-more-color-fixes`)
   - WordPressKit (~> 4.5.4)
   - WordPressMocks (~> 0.0.6)
   - WordPressShared (~> 1.8.9)
@@ -420,7 +420,7 @@ EXTERNAL SOURCES:
     :commit: v1.18.0
     :git: http://github.com/wordpress-mobile/gutenberg-mobile/
   WordPressAuthenticator:
-    :branch: issue/wcios-1555-color-fixes
+    :branch: issue/wcios-1555-more-color-fixes
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
   yoga:
     :podspec: https://raw.githubusercontent.com/wordpress-mobile/gutenberg-mobile/v1.18.0/react-native-gutenberg-bridge/third-party-podspecs/yoga.podspec.json
@@ -439,7 +439,7 @@ CHECKOUT OPTIONS:
     :commit: v1.18.0
     :git: http://github.com/wordpress-mobile/gutenberg-mobile/
   WordPressAuthenticator:
-    :commit: fc3d5debc1d17ce1b6da0fb691dead0ca2925278
+    :commit: d39a0014055ede1a56426fcd1732e8ae22710ef4
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
   ZendeskSDK:
     :git: https://github.com/zendesk/zendesk_sdk_ios
@@ -505,7 +505,7 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: 8f8a24b257a4d978c8d40ad1e7355b944ffbfa8c
   WordPress-Aztec-iOS: 450cb7095c6852c9c933d2062c318c4d7fa4d9a6
   WordPress-Editor-iOS: c3373b246efe59adf7b6ac476c8e562964724bf9
-  WordPressAuthenticator: b24e217686d62ad0546bbdf09280909dd2409a74
+  WordPressAuthenticator: 8ae7f6973b4aaae551d1ba985c0194ed40692224
   WordPressKit: 1d365775fac17903a76ad5723bc146ab1739ec82
   WordPressMocks: 5913bd04586a360212e07a8ccbcb36068d4425a3
   WordPressShared: 914ec1f855d74755e42d76e83c98b2d2d0e66218
@@ -516,6 +516,6 @@ SPEC CHECKSUMS:
   ZendeskSDK: 99679d8420a6d862773e2ddef0ebcc51b282317d
   ZIPFoundation: 89df685c971926b0323087952320bdfee9f0b6ef
 
-PODFILE CHECKSUM: ec809a93b3993b1cc55e9b044811623316787a45
+PODFILE CHECKSUM: 6cefab5e42084db6a468344020202228104e692c
 
 COCOAPODS: 1.8.4
