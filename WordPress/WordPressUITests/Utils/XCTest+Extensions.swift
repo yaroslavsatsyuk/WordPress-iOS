@@ -112,7 +112,7 @@ extension XCTestCase {
     }
 
     public func getCategory() -> String {
-        return "iOS Test"
+        return "Wedding"
     }
 
     public func getTag() -> String {
