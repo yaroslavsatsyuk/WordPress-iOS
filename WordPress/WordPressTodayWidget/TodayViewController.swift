@@ -13,6 +13,7 @@ class TodayViewController: UIViewController {
     private var statsValues: TodayWidgetStats? {
         didSet {
             updateStatsLabels()
+            tableView.reloadData()
         }
     }
 
@@ -36,12 +37,6 @@ class TodayViewController: UIViewController {
             extensionContext?.widgetLargestAvailableDisplayMode = isConfigured ? .expanded : .compact
         }
     }
-
-    private let numberFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        return formatter
-    }()
 
     private let tracks = Tracks(appGroupName: WPAppGroupName)
 
@@ -250,7 +245,6 @@ private extension TodayViewController {
                                                     visitors: todayInsight?.visitorsCount,
                                                     likes: todayInsight?.likesCount,
                                                     comments: todayInsight?.commentsCount)
-                self.tableView.reloadData()
             }
             completionHandler(NCUpdateResult.newData)
         }
@@ -345,15 +339,12 @@ private extension TodayViewController {
 
     // MARK: - Helpers
 
-    func displayString(for value: Int) -> String {
-        return numberFormatter.string(from: NSNumber(value: value)) ?? String(value)
-    }
-
     func updateStatsLabels() {
-        viewCount = displayString(for: statsValues?.views ?? 0)
-        visitorCount = displayString(for: statsValues?.visitors ?? 0)
-        likeCount = displayString(for: statsValues?.likes ?? 0)
-        commentCount = displayString(for: statsValues?.comments ?? 0)
+        let values = statsValues ?? TodayWidgetStats()
+        viewCount = values.views.abbreviatedString()
+        visitorCount = values.visitors.abbreviatedString()
+        likeCount = values.likes.abbreviatedString()
+        commentCount = values.comments.abbreviatedString()
     }
 
     // MARK: - Constants

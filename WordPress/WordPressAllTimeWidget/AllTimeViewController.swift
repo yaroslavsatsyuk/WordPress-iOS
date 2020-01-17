@@ -12,6 +12,7 @@ class AllTimeViewController: UIViewController {
     private var statsValues: AllTimeWidgetStats? {
         didSet {
             updateStatsLabels()
+            tableView.reloadData()
         }
     }
 
@@ -36,12 +37,6 @@ class AllTimeViewController: UIViewController {
             extensionContext?.widgetLargestAvailableDisplayMode = isConfigured ? .expanded : .compact
         }
     }
-
-    private let numberFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        return formatter
-    }()
 
     private let tracks = Tracks(appGroupName: WPAppGroupName)
 
@@ -250,7 +245,6 @@ private extension AllTimeViewController {
                                             visitors: allTimesStats?.visitorsCount,
                                             posts: allTimesStats?.postsCount,
                                             bestViews: allTimesStats?.bestViewsPerDayCount)
-                self.tableView.reloadData()
             }
             completionHandler(NCUpdateResult.newData)
         }
@@ -345,15 +339,12 @@ private extension AllTimeViewController {
 
     // MARK: - Helpers
 
-    func displayString(for value: Int) -> String {
-        return numberFormatter.string(from: NSNumber(value: value)) ?? String(value)
-    }
-
     func updateStatsLabels() {
-        viewCount = displayString(for: statsValues?.views ?? 0)
-        visitorCount = displayString(for: statsValues?.visitors ?? 0)
-        postCount = displayString(for: statsValues?.posts ?? 0)
-        bestCount = displayString(for: statsValues?.bestViews ?? 0)
+        let values = statsValues ?? AllTimeWidgetStats()
+        viewCount = values.views.abbreviatedString()
+        visitorCount = values.visitors.abbreviatedString()
+        postCount = values.posts.abbreviatedString()
+        bestCount = values.bestViews.abbreviatedString()
     }
 
     // MARK: - Constants
